@@ -43,6 +43,6 @@ class ContactSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Contact
-        fields = "__all__"
+        fields = ["name", "email", "phone", "address", "company"]
 
 
