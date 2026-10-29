@@ -13,9 +13,12 @@ class ContactSerializer(serializers.ModelSerializer):
 
     def validate_email(self, value):
         email = value.strip().lower()
-        existing = Contact.objects.filter(email=email).exclude(pk=self.instance.pk).exists()
+        existing = Contact.objects.filter(email=email)
 
-        if existing:
+        if self.instance:
+            existing = existing.exclude(pk=self.instance.pk)
+
+        if existing.exists():
             raise serializers.ValidationError('Email already exists')
         return email
 
@@ -24,10 +27,16 @@ class ContactSerializer(serializers.ModelSerializer):
         if not re.fullmatch(r'(\+91)?[6-9]\d{9}', phone):
             raise serializers.ValidationError('Enter a Valid Indian phone number')
 
-        existing = Contact.objects.filter(phone=phone).exclude(pk=self.instance.pk).exists()
-        if existing:
-            raise serializers.ValidationError('Phone already exists')
+        existing = Contact.objects.filter(phone=phone)
+
+        if self.instance:
+            existing = existing.exclude(pk=self.instance.pk)
+
+        if existing.exists():
+            raise serializers.ValidationError('Phone number already exists')
         return phone
+
+
 
     def validate_address(self, value):
         if not value.strip():
@@ -43,6 +52,10 @@ class ContactSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Contact
-        fields = ["name", "email", "phone", "address", "company"]
+        fields = "__all__"
+        read_only_fields = ("created_at", "updated_at")
+
+
+        # fields = ["name", "email", "phone", "address", "company"]
 
 

@@ -19,6 +19,6 @@ class ContactViewSet(viewsets.ModelViewSet):
 
     search_fields = ('name','email', 'phone')
     ordering_fields = ('name','email', 'phone', 'company')
-    ordering = ('name',)
+    filterset_fields = ('name','email', 'phone', 'company')
     pagination_class = ContactPagination
 
